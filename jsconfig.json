@@ -1,0 +1,16 @@
+// jsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@utils/*": ["./utils/*"],
+      "@helpers": ["./utils/helper.js"],
+      "@routes/*": ["./routes/*"],
+      "@controllers/*": ["./controllers/*"],
+      "@models": ["./models/index.js"],
+      "@services/*": ["./services/*"],
+      "@middleware/*": ["./middleware/*"]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "chatWithYouTubeCredit": 3,
+  "chatWithYouTubeLimit": 30,
+  "upgradeYouTubeChatLimitPerCredit": 10,
+  "welcomeCredit": 15,
+  "analyzePdfCreditPerPage": 0.02,
+  "pdfVideoGenerationCredit": 3,
+  "pdfQuizCreditPerQuestion": 0.01,
+  "pdfFlashCardCreditPerQuestion": 0.01,
+  "pdfGenerationCredit": 2,
+  "pdfTrueFalseCredit": 0.01,
+  "pdfTheoryQuestionCredit": 0,
+  "theoryAnswerVerificationCredit": 0.08
+}

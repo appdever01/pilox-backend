@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Payment</title>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+  </head>
+  <body>
+    <button onclick="payWithPaystack()">Pay Now</button>
+
+    <script>
+      function payWithPaystack() {
+        const handler = PaystackPop.setup({
+          key: 'pk_test_c720d983a1e01efbbe84667533e75c04271c0a22',
+          email: 'uvietoboretreasure@gmail.com',
+          amount: 10000,
+          currency: 'NGN',
+          ref: '' + Math.floor(Math.random() * 1000000000 + 1),
+          callback: function (response) {
+            alert('Payment complete! Reference: ' + response.reference);
+          },
+          onClose: function () {
+            alert('Transaction was not completed');
+          },
+        });
+        handler.openIframe();
+      }
+    </script>
+  </body>
+</html>

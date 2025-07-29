@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+serviceAccountKey.json
+*serviceAccountKey*.json
+*service-account*.json
+#had to temporarily remove serviceAccountKey.json from gitignore so I can run build.
+package-lock.json
+testfiles/
+temp_pdf/
+.env
+.env.local
+.env.*.local
+
+dist/
+build/
+public/dist/
+public/audio/
+uploads/
+/.well-known/
+
+.DS_Store
+Thumbs.db
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Upload directory
+uploads/
+
+# Temporary files
+tmp/
+temp/
+
+temp_pdf/
+
+
+.next/

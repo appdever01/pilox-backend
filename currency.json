@@ -1,0 +1,16 @@
+{
+  "currencies": [
+    {
+      "name": "United States Dollar",
+      "code": "USD",
+      "symbol": "$",
+      "rate": 1
+    },
+    {
+      "name": "Nigerian Naira",
+      "code": "NGN",
+      "symbol": "₦",
+      "rate": 1650
+    }
+  ]
+}

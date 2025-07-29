@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="pilox.Chat - Transform how you interact with PDFs through AI-powered chat, analysis and content creation. Generate quizzes, create topic-specific PDFs, convert formats, and produce video summaries. The intelligent platform for students, professionals and enterprises.">
+    <meta name="keywords"
+        content="PDF chat, interactive PDF, AI document analysis, PDF quiz generator, document conversion, video summaries, PDF content creation, enterprise document management, PDF learning platform">
+    <meta property="og:title" content="pilox.Chat - Revolutionary AI-Powered PDF Interaction Platform">
+    <meta property="og:description"
+        content="Upload PDFs to chat, analyze, and create content with AI. Generate quizzes, topic-specific documents, and video summaries. The secure, accessible platform for efficient document handling and knowledge sharing.">
+    <meta name="robots" content="index, follow">
+    <title>pilox.Chat - Interactive PDF Platform | AI-Powered Learning & Content Creation</title>
+    <link rel="icon" href="../../assets/images/logo.png" type="image/png">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="/">
+                    <img src="../../assets/images/logo.png" alt="pilox Logo" class="nav-logo">
+                </a>
+            </div>
+            <div class="mobile-menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links">
+                <a href="/convert" class="nav-link">Convert Documents</a>
+                <a href="/privacy" class="nav-link">Privacy Policy</a>
+                <% if (user) { %>
+                    <button onclick="handleLogout()" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                    <% } else { %>
+                        <a href="/login" class="navbar-button">Sign In</a>
+                        <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="loaderOverlay" class="loader-overlay" style="display: none;">
+            <div class="loader-content">
+                <div class="loader-spinner"></div>
+                <p>Analyzing PDF...</p>
+            </div>
+        </div>
+        <div class="left-panel">
+            <div class="upload-container" id="dropZone">
+
+                <form id="uploadForm">
+                    <div class="drop-zone">
+                        <i class="fas fa-file-pdf fa-3x"></i>
+                        <p>Drag & drop your PDF here or</p>
+                        <input type="file" id="pdfFile" name="pdf" accept=".pdf" required hidden>
+                        <button type="button" class="browse-button">Browse Files</button>
+                        <p class="selected-file" id="selectedFile"></p>
+                    </div>
+                    <div class="analyze-container">
+                        <div class="disclaimer">
+                            <i class="fas fa-lock-alt"></i>
+                            <div class="disclaimer-text">
+                                <i class="fas fa-shield-alt" style="margin-right: 5px;color: #67b467;"></i>
+                                Your document is processed securely and not stored. <a href="/signup"
+                                    style="color: #2d756f; text-decoration: underline;">Sign up</a> to
+                                save your conversations, or download results before refreshing or closing.
+                                <p style="margin-top: 10px;">
+                                    The AI might have to act as a tutor or the document
+                                    author for personalized insights.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="preview-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="previewToggle" checked>
+                                <span class="slider round"></span>
+                            </label>
+                            <span>Show PDF Preview</span>
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" class="analyze-button" style="display: none;">
+                                <i class="fas fa-brain" style="margin-right: 8px;"></i> Explain PDF
+                            </button>
+                            <button type="button" class="generate-video-button" onclick="generateVideo()"
+                                style="display: none;">
+                                <i class="fas fa-video" style="margin-right: 8px;"></i> Generate Video
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div id="status" class="status-container">
+                <p id="statusText"></p>
+                <div id="loader" class="loader" style="display: none;"></div>
+            </div>
+            <div id="pdfPreviewContainer" class="pdf-preview-container" style="display: block;">
+                <iframe id="pdfViewer" width="100%" height="600px" frameborder="0">
+                    <p>It appears your browser doesn't support PDF preview.
+                        <a id="pdfDownloadLink" href="#" target="_blank">Click here to download the PDF instead</a>
+                    </p>
+                </iframe>
+            </div>
+            <div id="pageNavigation" class="page-navigation"></div>
+            <div id="explanationContainer" class="explanation-container"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="copyright">
+                ©
+                <script>document.write(new Date().getFullYear())</script> Tekcify. All Rights Reserved.
+            </div>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=61571592123557&mibextid=ZbWKwL" target="_blank"
+                    class="social-link">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://ng.linkedin.com/company/tekcify" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://instagram.com/pilox.chat" target="_blank" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://x.com/pilox_chat" target="_blank" class="social-link">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+    <script>window.$zoho = window.$zoho || {}; $zoho.salesiq = $zoho.salesiq || { ready: function () { } }</script>
+    <script id="zsiqscript" src="https://salesiq.zohopublic.com/widget?wc=siq30fc898ea7a89200e47a2745a43d42e8"
+        defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="../../assets/js/index.js"></script>
+    <script src="../../assets/js/auth.js" type="module"></script>
+</body>
+
+</html>
