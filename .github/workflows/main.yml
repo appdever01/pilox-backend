@@ -1,60 +1,30 @@
-name: pilox Backend CI/CD services
+name: Auto Deploy to pilox backend
 
 on:
   push:
-    branches: ['main', 'pilox-backend-production']
+    branches:
+      - main
+
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build & push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile
-          push: true
-          tags: |
-            zeus1999/piloxbackend:latest
-            zeus1999/piloxbackend:${{ github.run_number }}
-
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+
     steps:
-      - name: Deploy application
-        uses: nekiro/ssh-job@main
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          user: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          command: |
-            docker ps -a --filter "name=^piloxbackend" --format "{{.ID}}" | xargs -r docker rm -f
-            docker pull zeus1999/piloxbackend:latest
-            docker run --restart always -p "5011:3000" --name piloxbackend-${{ github.run_number }} \
-              -e GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
-              -e PORT="${{ secrets.PORT }}" \
-              -e MONGODB_URI="${{ secrets.MONGODB_URI }}" \
-              -e MAILER_KEY="${{ secrets.MAILER_KEY }}" \
-              -e ZEPTO_API_KEY="${{ secrets.ZEPTO_API_KEY }}" \
-              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
-              -e NODE_ENV="${{ secrets.NODE_ENV }}" \
-              -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
-              -e DEFAULT_CREDIT_RATE="${{ secrets.DEFAULT_CREDIT_RATE }}" \
-              -e NIGERIA_CREDIT_RATE="${{ secrets.NIGERIA_CREDIT_RATE }}" \
-              -e WEBHOOK_SECRET="${{ secrets.WEBHOOK_SECRET }}" \
-              -e PAYSTACK_SECRET_KEY="${{ secrets.PAYSTACK_SECRET_KEY }}" \
-              -e PAYSTACK_PUBLIC_KEY="${{ secrets.PAYSTACK_PUBLIC_KEY }}" \
-              -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
-              -d zeus1999/piloxbackend:latest
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install sshpass
+      run: sudo apt-get install -y sshpass
+
+    - name: Run deploy script
+      run: |
+        echo "
+          export NVM_DIR=\$HOME/.nvm
+          source \$NVM_DIR/nvm.sh
+          nvm use 22
+          cd htdocs/api.pilox.com.ng
+          git pull origin main
+          npm install
+        " > temp_dev.sh
+        sshpass -p "${{ secrets.API_VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.API_VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -s' < temp_dev.sh
