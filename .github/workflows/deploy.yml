@@ -27,4 +27,4 @@ jobs:
           npm install
           /home/pilox-api/.nvm/versions/node/v22.18.0/bin/pm2 restart api
         " > temp_dev.sh
-        sshpass -p "${{ secrets.API_VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.API_VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -s' < temp_dev.sh`
+        sshpass -p "${{ secrets.API_VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.API_VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -s' < temp_dev.sh
