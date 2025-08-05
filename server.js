@@ -19,7 +19,7 @@ process.on('unhandledRejection', (err) => {
 
 const corsOptions = {
   origin: [
-    'https://pilox.chat',
+    'https://pilox.com.ng',
     'http://localhost:9000',
     'http://localhost:3000',
   ],
