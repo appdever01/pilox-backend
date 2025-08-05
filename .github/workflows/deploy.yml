@@ -19,12 +19,19 @@ jobs:
 
     - name: Run deploy script
       run: |
-        echo "
-          export NVM_DIR=\$HOME/.nvm
-          source \$NVM_DIR/nvm.sh
-          nvm use 22
+        echo '#!/bin/bash
+          set -e
+          if [ ! -d "$HOME/.nvm" ]; then
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+          fi
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 20 || true
+          nvm use 20
           cd htdocs/api.pilox.com.ng
           git pull origin main
           npm install
-        " > temp_dev.sh
+          echo "Deployment completed successfully!"
+        ' > temp_dev.sh
+        chmod +x temp_dev.sh
         sshpass -p "${{ secrets.API_VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.API_VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -s' < temp_dev.sh
