@@ -8,6 +8,7 @@ router.use(authMiddleware);
 router.get('/credit-balance', userController.getUserCreditBalance);
 router.get('/details', userController.getUserDetails);
 router.post('/update-details', userController.updateUserDetails);
+router.post('/set-wallet-address', userController.setUserWalletAddress);
 router.get('/credit-history', userController.getUserCreditHistory);
 router.post('/update-password', userController.updatePassword);
 router.get('/referral-details', userController.getReferralDetails);
