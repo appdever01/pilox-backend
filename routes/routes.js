@@ -26,7 +26,6 @@ router.use('/api/user', userRoutes);
 router.use('/api/payment', paymentRoutes);
 router.use('/api/chat', chatRoutes);
 router.use('/api/feedback', feedbackRoutes);
-const { response } = require('@helpers');
 
 router.post(
   '/paystack-webhook/:secret',
