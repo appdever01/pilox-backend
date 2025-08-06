@@ -24,12 +24,5 @@ export default [
   {
     ignores: ['public/**'], // Use "ignores" to specify the /public folder
   },
-  {
-    plugins: {
-      prettier: pluginPrettier, // Add Prettier plugin
-    },
-    rules: {
-      'prettier/prettier': 'error', // Show Prettier issues as ESLint errors
-    },
-  },
+
 ];
