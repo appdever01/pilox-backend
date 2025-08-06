@@ -173,7 +173,18 @@ class PdfController {
       const chatHistory = await ChatHistory.findOne({ pdfId });
       const user = await User.findById(chatHistory.userId);
       const retryLink = `https://pilox.com.ng/chat/new`;
-      mailer.sendVideoGenerationFailureEmail(user.email, user.name, retryLink);
+      try {
+        await mailer.sendVideoGenerationFailureEmail(
+          user.email,
+          user.name,
+          retryLink
+        );
+      } catch (emailError) {
+        console.error(
+          'Failed to send video generation failure email:',
+          emailError
+        );
+      }
       progressTracker.updateProgress(generationId, {
         status: 'error',
         error: error.message,
