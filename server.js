@@ -20,7 +20,7 @@ process.on('unhandledRejection', (err) => {
 const corsOptions = {
   origin: [
     'https://pilox.com.ng',
-    'http://localhost:3001',
+    'http://localhost:3000',
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
