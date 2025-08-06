@@ -9,6 +9,30 @@ class UserController {
     return res.json({ balance });
   }
 
+  async isValidEthereumAddress(address) {
+    return address.startsWith('0x') && address.length === 42;
+  }
+
+  async setUserWalletAddress(req, res) {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return response(res, 200, 'error', 'User not found');
+    }
+    if (user.walletAddress) {
+      return response(res, 200, 'error', 'Wallet address already set');
+    }
+    const { walletAddress } = req.body;
+    if (!this.isValidEthereumAddress(walletAddress)) {
+      return response(res, 200, 'error', 'Invalid wallet address');
+    }
+    if (!walletAddress) {
+      return response(res, 200, 'error', 'Wallet address is required');
+    }
+    await User.findByIdAndUpdate(userId, { walletAddress });
+    return response(res, 200, 'success', 'Wallet address set successfully');
+  }
+
   async getUserDetails(req, res) {
     const userId = req.user._id;
     const user = await User.findById(userId)
@@ -24,6 +48,7 @@ class UserController {
         status: user.status,
         isVerified: user.isVerified,
         referralCode: user.referralCode,
+        walletAddress: user.walletAddress,
         country: {
           name: user.country.name,
           code: user.country.code,
