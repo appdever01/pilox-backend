@@ -90,6 +90,10 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user',
   },
+  walletAddress: {
+    type: String,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);
