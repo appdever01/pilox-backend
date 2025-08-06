@@ -20,7 +20,7 @@ const PaymentSchema = new Schema(
     method: {
       type: String,
       uppercase: true,
-      enum: ['PAYSTACK', 'PAYPAL', 'STRIPE'],
+      enum: ['PAYSTACK', 'PAYPAL', 'STRIPE', 'PILOX'],
       required: true,
     },
     status: {
