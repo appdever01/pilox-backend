@@ -172,7 +172,7 @@ class PdfController {
       }
       const chatHistory = await ChatHistory.findOne({ pdfId });
       const user = await User.findById(chatHistory.userId);
-      const retryLink = `https://pilox.chat/chat/new`;
+      const retryLink = `https://pilox.com.ng/chat/new`;
       mailer.sendVideoGenerationFailureEmail(user.email, user.name, retryLink);
       progressTracker.updateProgress(generationId, {
         status: 'error',

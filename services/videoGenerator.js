@@ -74,7 +74,7 @@ class VideoGenerator {
       const cleanedText = this.cleanHtmlContent(text);
       const response = await axios({
         method: 'post',
-        url: 'https://services.pilox.chat/v1/audio/speech',
+        url: 'https://services.pilox.com.ng/v1/audio/speech',
         headers: {
           Authorization: 'Bearer a9X3l7Zq2YB5c8W1D6v4K0NmAeTgJpRfLQdVxMwCsHk',
           'Content-Type': 'application/json',
@@ -287,7 +287,7 @@ class VideoGenerator {
       formData.append('dpi', '300');
 
       const response = await axios.post(
-        'https://services.pilox.chat/convert-pdf',
+        'https://services.pilox.com.ng/convert-pdf',
         formData,
         {
           responseType: 'arraybuffer',

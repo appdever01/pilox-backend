@@ -59,7 +59,7 @@ class FileUploadService {
       const auth = this.generateSignature('POST', '/api/v1/files/upload');
 
       const response = await axios.post(
-        `https://upload.pilox.chat/api/upload/514620cf-be8c-4d80-9e8f-16a21ab1deeb`,
+        `https://process.pilox.com.ng/api/upload/514620cf-be8c-4d80-9e8f-16a21ab1deeb`,
         formData,
         {
           headers: {

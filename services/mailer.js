@@ -4,11 +4,11 @@ class MailService {
   constructor() {
     this.apiKey = process.env.ZEPTO_API_KEY;
     this.fromEmail = [
-      'naheem@pilox.chat',
-      'tesals@pilox.chat',
-      'treasure@pilox.chat',
-      'dipo@pilox.chat',
-      'victor@pilox.chat',
+      'naheem@pilox.com.ng',
+      'tesals@pilox.com.ng',
+      'treasure@pilox.com.ng',
+      'dipo@pilox.com.ng',
+      'victor@pilox.com.ng',
     ][Math.floor(Math.random() * 4)];
     this.baseUrl = 'https://api.zeptomail.com/v1.1/email/template';
   }
@@ -64,7 +64,10 @@ class MailService {
       {
         mail_template_key:
           '2d6f.511e5dc87b01e74c.k1.7629a460-cca7-11ef-b8e2-525400ae9113.1943ece81a6',
-        from: { address: 'noreply@pilox.chat', name: 'Forgot Password | pilox' },
+        from: {
+          address: 'noreply@pilox.com.ng',
+          name: 'Forgot Password | pilox',
+        },
         to: [{ email_address: { address: email, name: name } }],
         merge_info: {
           reset_password_link: `${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
@@ -129,7 +132,7 @@ class MailService {
       {
         mail_template_key:
           '2d6f.511e5dc87b01e74c.k1.91ef60b0-d114-11ef-a4d8-ba177e24b316.1945bd0723b',
-        from: { address: 'noreply@pilox.chat', name: 'Verification | pilox' },
+        from: { address: 'noreply@pilox.com.ng', name: 'Verification | pilox' },
         to: [{ email_address: { address: email, name: name } }],
         merge_info: {
           verification_link: `${process.env.FRONTEND_URL}/verify-email/${token}`,
@@ -153,7 +156,7 @@ class MailService {
           mail_template_key:
             '2d6f.511e5dc87b01e74c.k1.d2bf4ea0-d2d3-11ef-a4d8-ba177e24b316.1946743908a',
           from: {
-            address: 'noreply@pilox.chat',
+            address: 'noreply@pilox.com.ng',
             name: 'Video Generation | pilox',
           },
           to: [
@@ -192,7 +195,7 @@ class MailService {
           mail_template_key:
             '2d6f.511e5dc87b01e74c.k1.ce04a8c0-d2ff-11ef-a4d8-ba177e24b316.1946863cd4c',
           from: {
-            address: 'noreply@pilox.chat',
+            address: 'noreply@pilox.com.ng',
             name: 'Video Generation Failed | pilox',
           },
           to: [
