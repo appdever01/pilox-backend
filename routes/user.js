@@ -9,8 +9,10 @@ router.get('/credit-balance', userController.getUserCreditBalance);
 router.get('/details', userController.getUserDetails);
 router.post('/update-details', userController.updateUserDetails);
 router.post('/set-wallet-address', userController.setUserWalletAddress);
+router.post('/swap-token', userController.swapTokenForCredit);
 router.get('/credit-history', userController.getUserCreditHistory);
 router.post('/update-password', userController.updatePassword);
 router.get('/referral-details', userController.getReferralDetails);
 router.get('/referral-history', userController.getReferralHistory);
+
 module.exports = router;
