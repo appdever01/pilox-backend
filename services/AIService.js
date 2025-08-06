@@ -7,14 +7,55 @@ const GeminiFileManager = require('./GeminiFileManager');
 
 class AIService {
   constructor(apiKeys) {
+    if (!apiKeys || !Array.isArray(apiKeys) || apiKeys.length === 0) {
+      throw new Error('No API keys provided');
+    }
     this.apiKeys = apiKeys;
     this.currentKeyIndex = 0;
+    this.keyStatus = new Map(
+      apiKeys.map((key) => [key, { isValid: true, lastUsed: 0 }])
+    );
   }
 
   getNextApiKey() {
-    const key = this.apiKeys[this.currentKeyIndex];
-    this.currentKeyIndex = (this.currentKeyIndex + 1) % this.apiKeys.length;
+    const now = Date.now();
+    const cooldownPeriod = 60000; // 1 minute cooldown
+
+    // Filter valid keys that are not in cooldown
+    const availableKeys = this.apiKeys.filter((key) => {
+      const status = this.keyStatus.get(key);
+      return status.isValid && now - status.lastUsed >= cooldownPeriod;
+    });
+
+    if (availableKeys.length === 0) {
+      // If no keys are available, reset cooldown for all valid keys
+      this.apiKeys.forEach((key) => {
+        const status = this.keyStatus.get(key);
+        if (status.isValid) {
+          status.lastUsed = 0;
+        }
+      });
+      // Try getting available keys again
+      const resetKeys = this.apiKeys.filter(
+        (key) => this.keyStatus.get(key).isValid
+      );
+      if (resetKeys.length === 0) {
+        throw new Error('All API keys are invalid or exhausted');
+      }
+      return resetKeys[0];
+    }
+
+    const key = availableKeys[this.currentKeyIndex % availableKeys.length];
+    this.currentKeyIndex = (this.currentKeyIndex + 1) % availableKeys.length;
+    this.keyStatus.get(key).lastUsed = now;
     return key;
+  }
+
+  markKeyAsInvalid(key) {
+    const status = this.keyStatus.get(key);
+    if (status) {
+      status.isValid = false;
+    }
   }
 
   async analyzePdfWithGemini(
@@ -34,7 +75,9 @@ class AIService {
         const model = this.getModel(genAI, 'gemini-2.0-flash-001');
 
         const pdfjsLib = require('pdfjs-dist');
-        const pdfDoc = await pdfjsLib.getDocument(pdfBuffer).promise;
+        // Convert Buffer to Uint8Array as required by PDF.js
+        const uint8Array = new Uint8Array(pdfBuffer);
+        const pdfDoc = await pdfjsLib.getDocument(uint8Array).promise;
         const totalPages = pdfDoc.numPages;
         const finalEndPage = endPage
           ? Math.min(endPage, totalPages)
@@ -74,8 +117,20 @@ class AIService {
         return this.processAnalysisResponse(response.text());
       } catch (error) {
         console.error(`Attempt ${attempts + 1} failed:`, error);
+        // Check for specific API key related errors
+        if (
+          error.message.includes('quota') ||
+          error.message.includes('rate limit') ||
+          error.message.includes('invalid')
+        ) {
+          this.markKeyAsInvalid(this.apiKeys[this.currentKeyIndex]);
+        }
         attempts++;
-        if (attempts === maxAttempts) throw new Error('All API keys exhausted');
+        if (attempts === maxAttempts) {
+          throw new Error('All API keys exhausted. Please try again later.');
+        }
+        // Add a small delay before retrying
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
   }

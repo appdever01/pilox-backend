@@ -432,10 +432,10 @@ class PdfController {
         startTime: Date.now(),
       });
 
-      const pdfjsLib = require('pdfjs-dist');
-      const pdfDoc = await pdfjsLib.getDocument(pdfBuffer).promise;
-      const totalPages = pdfDoc.numPages;
-      const finalEndPage = endPage ? Math.min(endPage, totalPages) : totalPages;
+      // const pdfjsLib = require('pdfjs-dist');
+      // const pdfDoc = await pdfjsLib.getDocument(pdfBuffer).promise;
+      // const totalPages = pdfDoc.numPages;
+      // const finalEndPage = endPage ? Math.min(endPage, totalPages) : totalPages;
 
       // Update state to analyzing
       PdfController.analysisState.set(analysisId, {
@@ -517,10 +517,11 @@ class PdfController {
 
       return analysisId;
     } catch (error) {
+      console.log('PDF analysis error:', error);
       PdfController.analysisState.set(analysisId, {
         phase: 'error',
         progress: 0,
-        message: error.message,
+        message: error,
         explanations: [],
         startTime: Date.now(),
       });
