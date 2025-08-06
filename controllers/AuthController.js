@@ -300,11 +300,11 @@ class AuthController {
     user.verificationToken = null;
     user.verificationTokenExpires = null;
     await user.save();
-    try {
-      await mailer.sendWelcomeEmail(user.email, user.name);
-    } catch (error) {
-      console.error('Failed to send welcome email:', error);
-    }
+    // try {
+    //   await mailer.sendWelcomeEmail(user.email, user.name);
+    // } catch (error) {
+    //   console.error('Failed to send welcome email:', error);
+    // }
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: '30d',
     });
@@ -454,11 +454,11 @@ class AuthController {
             });
           }
         }
-        try {
-          await mailer.sendWelcomeEmail(user.email, user.name);
-        } catch (emailError) {
-          console.error('Failed to send welcome email:', emailError);
-        }
+        // try {
+        //   await mailer.sendWelcomeEmail(user.email, user.name);
+        // } catch (emailError) {
+        //   console.error('Failed to send welcome email:', emailError);
+        // }
       }
       user = await User.findById(user._id)
         .populate('country')

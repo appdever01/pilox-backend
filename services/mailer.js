@@ -4,11 +4,7 @@ class MailService {
   constructor() {
     this.apiKey = process.env.ZEPTO_API_KEY;
     this.fromEmail = [
-      'naheem@pilox.com.ng',
-      'tesals@pilox.com.ng',
-      'treasure@pilox.com.ng',
-      'dipo@pilox.com.ng',
-      'victor@pilox.com.ng',
+      'noreply@pilox.com.ng',
     ][Math.floor(Math.random() * 4)];
     this.baseUrl = 'https://api.zeptomail.com/v1.1/email/template';
   }
