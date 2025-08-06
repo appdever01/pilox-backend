@@ -1,16 +1,18 @@
-const { User, Currency, Country, CreditHistory } = require('@models');
+const { User, Currency, Country, CreditHistory, Payment } = require('@models');
 const bcrypt = require('bcryptjs');
-const { getUserCreditBalance, response } = require('@helpers');
+const {
+  getUserCreditBalance,
+  response,
+  generateCreditHistoryReference,
+} = require('@helpers');
+const dotenv = require('dotenv');
+dotenv.config();
 
 class UserController {
   async getUserCreditBalance(req, res) {
     const userId = req.user._id;
     const balance = await getUserCreditBalance(userId);
     return res.json({ balance });
-  }
-
-  async isValidEthereumAddress(address) {
-    return address.startsWith('0x') && address.length === 42;
   }
 
   async setUserWalletAddress(req, res) {
@@ -28,6 +30,103 @@ class UserController {
     }
     await User.findByIdAndUpdate(userId, { walletAddress });
     return response(res, 200, 'success', 'Wallet address set successfully');
+  }
+
+  async swapTokenForCredit(req, res) {
+    try {
+      const userId = req.user._id;
+      console.log(userId);
+      const user = await User.findById(userId).populate('currency');
+      if (!user) {
+        return response(res, 200, 'error', 'User not found');
+      }
+      if (!user.walletAddress) {
+        return response(res, 200, 'error', 'Wallet address not set');
+      }
+      const { credits } = req.body;
+      if (!credits) {
+        return response(res, 200, 'error', 'Credit is required');
+      }
+      if (credits <= 0) {
+        return response(res, 200, 'error', 'Credit must be greater than 0');
+      }
+      const axios = require('axios');
+      const token = process.env.BLOCKCHAIN_SECRET_KEY;
+      const api = process.env.BLOCKCHAIN_API_URL;
+      const rate = process.env.PILOX_CREDIT_RATE || 200;
+
+      const checkBalance = await axios.post(
+        `${api}/balance/${user.walletAddress}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (checkBalance.data.status === true) {
+        const balance = checkBalance.data.data.balance;
+        const amount = credits * rate;
+        if (balance < amount) {
+          return response(res, 200, 'error', 'Insufficient $PILOX balance');
+        }
+
+        const deductToken = await axios.post(
+          `${api}/deduct-token`,
+          {
+            userAddress: user.walletAddress,
+            amount: amount,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (deductToken.data.status === true) {
+          const reference = await generateCreditHistoryReference();
+          
+          await Payment.create({
+            user: user._id,
+            reference,
+            amount,
+            description: `PILOX swap for ${credits} credits`,
+            currency: user.currency._id, 
+            method: 'PILOX',
+            status: 'completed',
+            credits
+          });
+
+          await User.findByIdAndUpdate(user._id, {
+            $inc: { credits: credits },
+          });
+
+          const creditHistoryReference = await generateCreditHistoryReference();
+          await CreditHistory.create({
+            user: user._id,
+            credits,
+            reference: creditHistoryReference,
+            type: 'credit',
+            description: `PILOX swap for ${credits} credits`,
+            status: 'completed',
+            createdAt: new Date(),
+          });
+
+          return response(res, 200, 'success', 'Token swap completed successfully', {
+            credits_added: credits
+          });
+        } else {
+          return response(res, 200, 'error', 'Failed to deduct token');
+        }
+      } else {
+        return response(res, 200, 'error', 'Failed to check balance');
+      }
+    } catch (error) {
+      console.error('Token swap error:', error);
+      return response(res, 500, 'error', 'An error occurred during token swap');
+    }
   }
 
   async getUserDetails(req, res) {
