@@ -23,9 +23,6 @@ class UserController {
       return response(res, 200, 'error', 'Wallet address already set');
     }
     const { walletAddress } = req.body;
-    if (!this.isValidEthereumAddress(walletAddress)) {
-      return response(res, 200, 'error', 'Invalid wallet address');
-    }
     if (!walletAddress) {
       return response(res, 200, 'error', 'Wallet address is required');
     }
