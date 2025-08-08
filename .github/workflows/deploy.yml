@@ -22,4 +22,4 @@ jobs:
           cd htdocs/upload.pilox.com.ng
           git pull origin upload
         " > temp_dev.sh
-        sshpass -p "${{ secrets.UPLOAD_VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.UPLOAD_VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -s' < temp_dev.sh
+        sshpass -p "${{ secrets.UPLOAD_VPS_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.UPLOAD_VPS_USER }}@${{ secrets.UPLOAD_VPS_HOST }} 'bash -s' < temp_dev.sh
